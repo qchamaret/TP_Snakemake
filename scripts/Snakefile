@@ -14,7 +14,11 @@ rule all:
                 expand("results/fastqc_post/{sample}_trim_paired_fastqc.html", sample = config["samples"]),
 		expand("results/bowtie2/{subsample}_trim_mapped_sorted_q2.bam", subsample = config["subsamples"]),
                 expand("results/bowtie2/{subsample}_trim_mapped_sorted_q2.bam.bai", subsample = config["subsamples"]),
-                expand("results/bowtie2/{subsample}.log", subsample = config["subsamples"])
+                expand("results/bowtie2/{subsample}.log", subsample = config["subsamples"]),
+		expand("results/picard/{subsample}_trim_mapped_sorted_q2_nodup.bam", subsample = config["subsamples"]),
+                expand("results/picard/{subsample}_trim_mapped_sorted_q2_nodup.bam.bai", subsample = config["subsamples"]),
+                expand("results/picard/{subsample}_trim_mapped_sorted_q2_dups.txt", subsample = config["subsamples"]),
+                expand("results/picard/{subsample}_trim_mapped_sorted_q2.log", subsample = config["subsamples"])
 
 rule fastqc_init:
         input:
@@ -104,6 +108,28 @@ rule bowtie2:
 		mkdir -p results/bowtie2
 		bowtie2  --very-sensitive -p 8 -k 10  -x {input.idx_bt2}/all  \
 		-1 {input.fwd}  -2 {input.rev} | samtools view -q 2 -bS  - | samtools sort - -o {output.bam}
+		samtools index -b {output.bam}
+		samtools idxstats {output.bam} > {output.log}
+		"""
+rule picard : 
+	input:
+		"results/bowtie2/{subsample}_trim_mapped_sorted_q2.bam"
+	output:
+		bam = "results/picard/{subsample}_trim_mapped_sorted_q2_nodup.bam",
+		bai = "results/picard/{subsample}_trim_mapped_sorted_q2_nodup.bam.bai",
+		txt = "results/picard/{subsample}_trim_mapped_sorted_q2_dups.txt",
+		log = "results/picard/{subsample}_trim_mapped_sorted_q2.log"
+	conda:
+		"envs/picards.yaml"
+	threads: 6
+	log:
+		"log/picard_{subsample}.log"
+	message:
+		"Executing Mapping cleaning on : {input}"
+	shell:
+		"""
+		mkdir -p results/picard
+		java -jar /home/ubuntu/snakemake/picard.jar MarkDuplicates I="{input}" O={output.bam} M={output.txt} REMOVE_DUPLICATES=true
 		samtools index -b {output.bam}
 		samtools idxstats {output.bam} > {output.log}
 		"""
