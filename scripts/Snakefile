@@ -21,7 +21,11 @@ rule all:
                 expand("results/picard/{subsample}_trim_mapped_sorted_q2.log", subsample = config["subsamples"]),
 		expand("results/deeptools/{subsample}_multiBamSum.npz", subsample = config["multibam"]),
 		expand("results/deeptools/{subsample}_heatmap-pearson.pdf", subsample = config["multibam"]),
-		expand("results/deeptools/{subsample}_heatmap-pearson.tab", subsample = config["multibam"])
+		expand("results/deeptools/{subsample}_heatmap-pearson.tab", subsample = config["multibam"]),
+		expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_model.r", subsample = config["subsamples"]),
+                expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak", subsample = config["subsamples"]),
+                expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.xls", subsample = config["subsamples"]),
+                expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_summits.bed", subsample = config["subsamples"])
 
 rule fastqc_init:
         input:
@@ -177,4 +181,26 @@ rule deeptools:
 			-o {output.pdf}   \
 			--outFileCorMatrix {output.tab} \
 			--removeOutliers
+		"""
+rule macs2:
+	input:
+		"results/picard/{subsample}_trim_mapped_sorted_q2_nodup.bam"
+	output:
+		r = "results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_model.r",
+		nar = "results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak",
+		xls = "results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.xls",
+		bed = "results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_summits.bed"
+	conda:
+		"envs/macs2.yaml"
+	threads: 2
+	log:
+		"logs/deeptools_multiBamSum_{subsample}.log"
+	message:
+		"Executing first data visualisation on : {input}"
+	shell:
+		"""
+		mkdir -p results/MACS2
+		macs2 callpeak -t {input} -n {wildcards.subsample}_trim_mapped_sorted_q2_nodup \
+		-f BAM -g mm \
+		--outdir "results/MACS2"
 		"""
