@@ -39,3 +39,5 @@ subsamples:
  ss_50k_24h_R1: data/subset/ss_50k_24h_R1
  ss_50k_24h_R2: data/subset/ss_50k_24h_R2
  ss_50k_24h_R3: data/subset/ss_50k_24h_R3
+
+multibam : data_visu

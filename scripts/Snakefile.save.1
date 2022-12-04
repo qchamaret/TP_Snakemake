@@ -19,9 +19,7 @@ rule all:
                 expand("results/picard/{subsample}_trim_mapped_sorted_q2_nodup.bam.bai", subsample = config["subsamples"]),
                 expand("results/picard/{subsample}_trim_mapped_sorted_q2_dups.txt", subsample = config["subsamples"]),
                 expand("results/picard/{subsample}_trim_mapped_sorted_q2.log", subsample = config["subsamples"]),
-		expand("results/deeptools/{subsample}_multiBamSum.npz", subsample = config["multibam"]),
-		expand("results/deeptools/{subsample}_heatmap-pearson.pdf", subsample = config["multibam"]),
-		expand("results/deeptools/{subsample}_heatmap-pearson.tab", subsample = config["multibam"])
+		expand("results/deeptools/array.npz")
 
 rule fastqc_init:
         input:
@@ -126,7 +124,7 @@ rule picard :
 		"envs/picards.yaml"
 	threads: 6
 	log:
-		"logs/picard_{subsample}.log"
+		"log/picard_{subsample}.log"
 	message:
 		"Executing Mapping cleaning on : {input}"
 	shell:
@@ -136,45 +134,20 @@ rule picard :
 		samtools index -b {output.bam}
 		samtools idxstats {output.bam} > {output.log}
 		"""
-rule array:
+rule array : 
 	input:
-		bam = expand("results/picard/{subsample}_trim_mapped_sorted_q2_nodup.bam", subsample = config["subsamples"])
+		"results/picard/{subsample}_trim_mapped_sorted_q2_nodup"
 	output:
-		"results/deeptools/{subsample}_multiBamSum.npz"
+		"results/deeptools/array.npz"
 	conda:
 		"envs/deeptools.yaml"
-	threads: 2
+	threads: 1
 	log:
-		"logs/deeptools_multiBamSum_{subsample}.log"
+		"log/array_{subsample}.log"
 	message:
-		"Executing first data visualisation on : {input}"
+		"Executing Data mining on : {input}"
 	shell:
 		"""
 		mkdir -p results/deeptools
-		multiBamSummary bins --bamfiles {input.bam} -o {output}
-		"""
-
-rule deeptools:
-	input:
-		"/home/ubuntu/snakemake/results/deeptools/data_visu_multiBamSum.npz"
-	output:
-		pdf = "results/deeptools/{subsample}_heatmap-pearson.pdf",
-		tab = "results/deeptools/{subsample}_heatmap-pearson.tab"
-	conda:
-		"envs/deeptools.yaml"
-	threads: 2
-	log:
-		"logs/deeptools_corr_{subsample}.log"
-	message:
-		"Visualisation on {input} in a correlation matrix"
-	shell:
-		"""
-		plotCorrelation \
-			-in {input} \
-			--corMethod pearson --skipZeros \
-			--plotTitle "Pearson Correlation of Read coverage" \
-			--whatToPlot heatmap --colorMap RdYlBu --plotNumbers \
-			-o {output.pdf}   \
-			--outFileCorMatrix {output.tab} \
-			--removeOutliers
+		multiBamSummary bins --bamfiles {input} -o {output}
 		"""
