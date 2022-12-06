@@ -25,7 +25,11 @@ rule all:
 		expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_model.r", subsample = config["subsamples"]),
                 expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak", subsample = config["subsamples"]),
                 expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.xls", subsample = config["subsamples"]),
-                expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_summits.bed", subsample = config["subsamples"])
+                expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_summits.bed", subsample = config["subsamples"]),
+		expand("results/bedtools/ss_50k_0h_{subsample0}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample0 = config["zero"]),
+		expand("results/bedtools/ss_50k_24h_{subsample24}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample24 = config["vingtquatre"]),
+		expand("results/bedtools/ss_50k_{subsample0h}_trim_mapped_sorted_q2_nodup_merged_peaks.bed", subsample0h = config["zeroh"])
+#		expand("results/bedtools/ss_50k_{subsample24h}_trim_mapped_sorted_q2_nodup_merged_peaks.bed", subsample24h = config["24h"])
 
 rule fastqc_init:
         input:
@@ -194,9 +198,9 @@ rule macs2:
 		"envs/macs2.yaml"
 	threads: 2
 	log:
-		"logs/deeptools_multiBamSum_{subsample}.log"
+		"logs/macs2_{subsample}.log"
 	message:
-		"Executing first data visualisation on : {input}"
+		"Identification of DNA access sites on : {input}"
 	shell:
 		"""
 		mkdir -p results/MACS2
@@ -204,3 +208,51 @@ rule macs2:
 		-f BAM -g mm \
 		--outdir "results/MACS2"
 		"""
+
+rule concat_zero:
+	input:
+		expand("results/MACS2/{subsample0}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak", subsample0 = config["subsamples"])
+	output:
+		"results/bedtools/ss_50k_0h_{subsample0}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+	threads: 6
+	log:
+		"logs/{subsample0}_concat_zero.log"
+	message:
+		"Concatenation of zero samples on : {input}"
+	shell:
+		"""
+		mkdir -p results/bedtools
+		cat {input} > {output}
+		"""
+
+rule concat_vingtquatre:
+	input:		
+		expand("results/MACS2/{subsample24}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak", subsample24 = config["subsamples"])
+	output:
+		"results/bedtools/ss_50k_24h_{subsample24}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+	threads: 6
+	log:
+		"logs/{subsample24}_concat_vq.log"
+	message:
+		"Concatenation of twenty four samples on : {input}"
+	shell:
+		"""
+		cat {input} > {output}
+		"""
+
+rule merge0h:
+        input:
+		"results/bedtools/ss_50k_{subsample0h}_R1_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+        output:
+                "results/bedtools/ss_50k_{subsample0h}_trim_mapped_sorted_q2_nodup_merged_peaks.bed"
+        conda:
+                "envs/bedtools.yaml"
+        threads: 6
+        log:
+                "logs/{subsample0h}_concat_vq.log"
+        message:
+                "Concatenation of twenty four samples on : {input}"
+        shell:
+                """
+                sort -k1,1 -k2,2n {input} | bedtools merge -i - > {output}
+                """
