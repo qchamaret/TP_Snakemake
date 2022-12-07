@@ -28,8 +28,9 @@ rule all:
                 expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_summits.bed", subsample = config["subsamples"]),
 		expand("results/bedtools/ss_50k_0h_{subsample0}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample0 = config["zero"]),
 		expand("results/bedtools/ss_50k_24h_{subsample24}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample24 = config["vingtquatre"]),
-		expand("results/bedtools/ss_50k_{subsample0h}_trim_mapped_sorted_q2_nodup_merged_peaks.bed", subsample0h = config["zeroh"])
-#		expand("results/bedtools/ss_50k_{subsample24h}_trim_mapped_sorted_q2_nodup_merged_peaks.bed", subsample24h = config["24h"])
+		expand("results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_common.bed", subsample = config["rep"]),
+                expand("results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_0h_unique.bed", subsample = config["rep"]),
+                expand("results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_24h_unique.bed", subsample = config["rep"])
 
 rule fastqc_init:
         input:
@@ -240,19 +241,58 @@ rule concat_vingtquatre:
 		cat {input} > {output}
 		"""
 
-rule merge0h:
+rule intersect_common:
+	input:
+		zero = "results/bedtools/ss_50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
+		vingtquatre = "results/bedtools/ss_50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+	output:
+		"results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_common.bed"
+	conda:
+		"envs/bedtools.yaml"
+	threads: 6
+	log:
+		"logs/{subsample}_common.log"
+	message:
+		"Identification of common sites : {input}"
+	shell:
+		"""
+		bedtools intersect -a {input.zero} -b {input.vingtquatre} > {output}
+		"""
+
+rule intersect_0h_unique:
         input:
-		"results/bedtools/ss_50k_{subsample0h}_R1_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+                zero = "results/bedtools/ss_50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
+                vingtquatre = "results/bedtools/ss_50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
         output:
-                "results/bedtools/ss_50k_{subsample0h}_trim_mapped_sorted_q2_nodup_merged_peaks.bed"
+                "results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_0h_unique.bed"
         conda:
                 "envs/bedtools.yaml"
         threads: 6
         log:
-                "logs/{subsample0h}_concat_vq.log"
+                "logs/{subsample}_0h_unique.log"
         message:
-                "Concatenation of twenty four samples on : {input}"
+                "Identification of 0h unique sites : {input}"
         shell:
                 """
-                sort -k1,1 -k2,2n {input} | bedtools merge -i - > {output}
+                bedtools intersect -v -a {input.zero} -b {input.vingtquatre} > {output}
+		"""
+
+rule intersect_24h_unique:
+        input:
+                zero = "results/bedtools/ss_50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
+                vingtquatre = "results/bedtools/ss_50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+        output:
+                "results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_24h_unique.bed"
+        conda:
+                "envs/bedtools.yaml"
+        threads: 6
+        log:
+                "logs/{subsample}_24h_unique.log"
+        message:
+                "Identification of 24h unique sites : {input}"
+        shell:
+                """
+                bedtools intersect -v -a {input.vingtquatre} -b {input.zero} > {output}
+                rm results/bedtools/*_R2_*
+                rm results/bedtools/*_R3_*
                 """
