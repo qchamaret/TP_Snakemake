@@ -82,7 +82,7 @@ Thanks to the results from the 'atac_picards.slurm' script we are now able to id
 <h2>Identification of common and unique DNA access sites</h2>
 
 Now that we have the positions of the access regions for the t=0h and the t=24h results, we are now able to see which regions are common and unique between these two stages. This analyze will be performed by the intersect function from the bedtools module. This function will take two files as input and see if there is overlaps between them. 
-In order to see the common and unique sites between the two conditions, we need to create two different arrays which contains three elements. One of them will contains all the t=0h files and the other, all the t=24h files. Then, the files in a same array will be merged in order to see the differences between all the samples.
+In order to see the common and unique sites between the two conditions, we need to create two different arrays which contains three elements. One of them will contains all the t=0h files and the other, all the t=24h files.
 
 If an access site is open at t=0h but closed at t=24h, it means that the Tamoxifen drug had an effect on these sites and closed them.
 However, if an access site is open at t=0h and is still open at t=24h, it means thant the Tamoxifen drug hadn't an effect on these sites.
