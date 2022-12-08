@@ -156,21 +156,6 @@ plotCorrelation -in "input_file" -p "character" --plotNumbers -c "character -o "
   -c : Choose whether to use the pearson or the spearman coefficient<br>
   --removeOutliers : Will remove outliers from the samples<br>
 
-<h3>bamCoverage</h3>
-
-bamCoverage -b "input_file" -o "path" -of "character"
-
-  -o : Path to where the output files should be writen<br>
-  -of : Choose whether the output will be in Bigwig or in bedgraph format<br>
-
-<h3>bamPEFragmentSize</h3>
-
-bamPEFragmentSize -b "input_files" --samplesLabel "character" --table "path"  -o "path"
-
-  -o : Path to where the output files should be writen<br>
-  --samplesLabels : Rename the samples by these labels<br>
-  --table : Give the metrics in a tabular format<br>
-
 "deepTools: a flexible platform for exploring deep-sequencing data" Ramírez F, Dündar F, Diehl S, Grüning BA, Manke T. 2014 https://doi.org/10.1093%2Fnar%2Fgku365
 
 <h2>MACS2 - CallPeaks</h2>
