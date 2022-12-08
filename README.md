@@ -4,6 +4,8 @@ TThe main objective of this project was to identify the genomic regions accessib
 This B3 cell line was transduced by a retroviral pathway with a vector coding for a fusion protein, Ikaros-REt2, which can control nuclear levels of Ikaros after exposition to the Tamoxifen drug.
 After this treatment, the cultures were collected at t=0h and t=24h.
 
+Here, we will use a VM constitued of 8 CPU, 32 Gb of RAM and 128 Gb of storage in order to perform this analysis.
+
 <h2>Experimental design</h2>
 
 About 50 000 cells were collected for each sample.
@@ -25,13 +27,13 @@ SRR4785343&nbsp;&nbsp;&nbsp;&nbsp;50k_24h_R3_1&nbsp;&nbsp;&nbsp;&nbsp;0.5G&nbsp;
 
 In addition, we must recover the data from previous analysis which are on the HPC cluster. We make this with these commands :
 
-Subsets : scp -r student08@193.49.167.84:/home/users/shared/data/atacseq/data/subset /home/ubuntu/snakemake/data/
-Raw data : scp -r student08@193.49.167.84:/home/users/shared/data/atacseq/data/raw /home/ubuntu/snakemake/data/
-Bowtie files : scp -r student08@193.49.167.84:/home/users/shared/databanks/Mus_musculus_GRCm39/bowtie2 /home/ubuntu/snakemake/data/reference/
-Fasta files : scp -r student08@193.49.167.84:/home/users/shared/databanks/Mus_musculus_GRCm39/fasta/all.fasta /home/ubuntu/snakemake/data/reference/
-Trimmomatic tool : scp -r student08@193.49.167.84:/opt/apps/trimmomatic-0.38/trimmomatic-0.38.jar /home/ubuntu/snakemake/
-Picard tool : scp -r student08@193.49.167.84:/opt/apps/picard-2.18.25/picard.jar /home/ubuntu/snakemake/
-Illumina clips : scp -r student08@193.49.167.84:/home/users/shared/data/atacseq/data/NexteraPE-PE.fa /home/ubuntu/snakemake/data/
+- Subsets : scp -r student08@193.49.167.84:/home/users/shared/data/atacseq/data/subset /home/ubuntu/snakemake/data/
+- Raw data : scp -r student08@193.49.167.84:/home/users/shared/data/atacseq/data/raw /home/ubuntu/snakemake/data/
+- Bowtie files : scp -r student08@193.49.167.84:/home/users/shared/databanks/Mus_musculus_GRCm39/bowtie2 /home/ubuntu/snakemake/data/reference/
+- Fasta files : scp -r student08@193.49.167.84:/home/users/shared/databanks/Mus_musculus_GRCm39/fasta/all.fasta /home/ubuntu/snakemake/data/reference/
+- Trimmomatic tool : scp -r student08@193.49.167.84:/opt/apps/trimmomatic-0.38/trimmomatic-0.38.jar /home/ubuntu/snakemake/
+- Picard tool : scp -r student08@193.49.167.84:/opt/apps/picard-2.18.25/picard.jar /home/ubuntu/snakemake/
+- Illumina clips : scp -r student08@193.49.167.84:/home/users/shared/data/atacseq/data/NexteraPE-PE.fa /home/ubuntu/snakemake/data/
 
 <h1>Workflow</h1>
 <h2>Quality control of the raw data</h2>
@@ -96,6 +98,7 @@ Now that we know which sites are impacted by the Tamoxifen drug, we can visualiz
 
 You can run all the steps of the workflow with the Snakefile by launching the command :
 snakemake --cores all --use-conda --snakefile scripts/Snakefile
+
 <h1>Used tools</h1>
 
 <h2>Fastqc</h2>
