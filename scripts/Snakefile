@@ -26,15 +26,15 @@ rule all:
                 expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak", subsample = config["subsamples"]),
                 expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_peaks.xls", subsample = config["subsamples"]),
                 expand("results/MACS2/{subsample}_trim_mapped_sorted_q2_nodup_summits.bed", subsample = config["subsamples"]),
-		expand("results/bedtools/ss_50k_0h_{subsample0}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample0 = config["zero"]),
-		expand("results/bedtools/ss_50k_24h_{subsample24}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample24 = config["vingtquatre"]),
-		expand("results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_common.bed", subsample = config["rep"]),
-                expand("results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_0h_unique.bed", subsample = config["rep"]),
-                expand("results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_24h_unique.bed", subsample = config["rep"])
+		expand("results/bedtools/50k_0h_{subsample0}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample0 = config["zero"]),
+		expand("results/bedtools/50k_24h_{subsample24}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak", subsample24 = config["vingtquatre"]),
+		expand("results/bedtools/50k_{subsample}_trim_mapped_sorted_q2_nodup_common.bed", subsample = config["rep"]),
+                expand("results/bedtools/50k_{subsample}_trim_mapped_sorted_q2_nodup_0h_unique.bed", subsample = config["rep"]),
+                expand("results/bedtools/50k_{subsample}_trim_mapped_sorted_q2_nodup_24h_unique.bed", subsample = config["rep"])
 
 rule fastqc_init:
         input:
-                "data/subset/{sample}.fastq.gz"
+                "data/raw/{sample}.fastq.gz"
         output:
                 html = "results/fastqc_init/{sample}_fastqc.html",
                 zip  = "results/fastqc_init/{sample}_fastqc.zip"
@@ -52,8 +52,8 @@ rule fastqc_init:
                 """
 rule trim:
 	input:
-		fwd = "data/subset/{subsample}_1.fastq.gz",
-		rev = "data/subset/{subsample}_2.fastq.gz"
+		fwd = "data/raw/{subsample}_1.fastq.gz",
+		rev = "data/raw/{subsample}_2.fastq.gz"
 	output:
 		fwd_paired = "results/trim/{subsample}_1_trim_paired.fastq.gz",
 		fwd_unpaired = "results/trim/{subsample}_1_trim_unpaired.fastq.gz",
@@ -214,7 +214,7 @@ rule concat_zero:
 	input:
 		expand("results/MACS2/{subsample0}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak", subsample0 = config["subsamples"])
 	output:
-		"results/bedtools/ss_50k_0h_{subsample0}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+		"results/bedtools/50k_0h_{subsample0}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
 	threads: 6
 	log:
 		"logs/{subsample0}_concat_zero.log"
@@ -230,7 +230,7 @@ rule concat_vingtquatre:
 	input:		
 		expand("results/MACS2/{subsample24}_trim_mapped_sorted_q2_nodup_peaks.narrowPeak", subsample24 = config["subsamples"])
 	output:
-		"results/bedtools/ss_50k_24h_{subsample24}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+		"results/bedtools/50k_24h_{subsample24}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
 	threads: 6
 	log:
 		"logs/{subsample24}_concat_vq.log"
@@ -243,10 +243,10 @@ rule concat_vingtquatre:
 
 rule intersect_common:
 	input:
-		zero = "results/bedtools/ss_50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
-		vingtquatre = "results/bedtools/ss_50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+		zero = "results/bedtools/50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
+		vingtquatre = "results/bedtools/50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
 	output:
-		"results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_common.bed"
+		"results/bedtools/50k_{subsample}_trim_mapped_sorted_q2_nodup_common.bed"
 	conda:
 		"envs/bedtools.yaml"
 	threads: 6
@@ -261,10 +261,10 @@ rule intersect_common:
 
 rule intersect_0h_unique:
         input:
-                zero = "results/bedtools/ss_50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
-                vingtquatre = "results/bedtools/ss_50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+                zero = "results/bedtools/50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
+                vingtquatre = "results/bedtools/50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
         output:
-                "results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_0h_unique.bed"
+                "results/bedtools/50k_{subsample}_trim_mapped_sorted_q2_nodup_0h_unique.bed"
         conda:
                 "envs/bedtools.yaml"
         threads: 6
@@ -279,10 +279,10 @@ rule intersect_0h_unique:
 
 rule intersect_24h_unique:
         input:
-                zero = "results/bedtools/ss_50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
-                vingtquatre = "results/bedtools/ss_50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
+                zero = "results/bedtools/50k_0h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak",
+                vingtquatre = "results/bedtools/50k_24h_{subsample}_trim_mapped_sorted_q2_nodup_combined_peaks.narrowPeak"
         output:
-                "results/bedtools/ss_50k_{subsample}_trim_mapped_sorted_q2_nodup_24h_unique.bed"
+                "results/bedtools/50k_{subsample}_trim_mapped_sorted_q2_nodup_24h_unique.bed"
         conda:
                 "envs/bedtools.yaml"
         threads: 6

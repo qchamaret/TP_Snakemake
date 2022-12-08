@@ -19,38 +19,38 @@ idx_bt2: /home/ubuntu/atacseq/data/reference/Mus_musculus_GRCm39/bowtie2/all
 
 ## Samples
 samples:
- ss_50k_0h_R1_1: data/subset/ss_50k_0h_R1_1.fastq.gz
- ss_50k_0h_R1_2: data/subset/ss_50k_0h_R1_2.fastq.gz
- ss_50k_0h_R2_1: data/subset/ss_50k_0h_R2_1.fastq.gz
- ss_50k_0h_R2_2: data/subset/ss_50k_0h_R2_2.fastq.gz
- ss_50k_0h_R3_1: data/subset/ss_50k_0h_R3_1.fastq.gz
- ss_50k_0h_R3_2: data/subset/ss_50k_0h_R3_2.fastq.gz
- ss_50k_24h_R1_1: data/subset/ss_50k_24h_R1_1.fastq.gz
- ss_50k_24h_R1_2: data/subset/ss_50k_24h_R1_2.fastq.gz
- ss_50k_24h_R2_1: data/subset/ss_50k_24h_R2_1.fastq.gz
- ss_50k_24h_R2_2: data/subset/ss_50k_24h_R2_2.fastq.gz
- ss_50k_24h_R3_1: data/subset/ss_50k_24h_R3_1.fastq.gz
- ss_50k_24h_R3_2: data/subset/ss_50k_24h_R3_2.fastq.gz
+ 50k_0h_R1_1: data/raw/50k_0h_R1_1.fastq.gz
+ 50k_0h_R1_2: data/raw/50k_0h_R1_2.fastq.gz
+ 50k_0h_R2_1: data/raw/50k_0h_R2_1.fastq.gz
+ 50k_0h_R2_2: data/raw/50k_0h_R2_2.fastq.gz
+ 50k_0h_R3_1: data/raw/50k_0h_R3_1.fastq.gz
+ 50k_0h_R3_2: data/raw/50k_0h_R3_2.fastq.gz
+ 50k_24h_R1_1: data/raw/50k_24h_R1_1.fastq.gz
+ 50k_24h_R1_2: data/raw/50k_24h_R1_2.fastq.gz
+ 50k_24h_R2_1: data/raw/50k_24h_R2_1.fastq.gz
+ 50k_24h_R2_2: data/raw/50k_24h_R2_2.fastq.gz
+ 50k_24h_R3_1: data/raw/50k_24h_R3_1.fastq.gz
+ 50k_24h_R3_2: data/raw/50k_24h_R3_2.fastq.gz
 
 subsamples:
- ss_50k_0h_R1: data/subset/ss_50k_0h_R1
- ss_50k_0h_R2: data/subset/ss_50k_0h_R2
- ss_50k_0h_R3: data/subset/ss_50k_0h_R3
- ss_50k_24h_R1: data/subset/ss_50k_24h_R1
- ss_50k_24h_R2: data/subset/ss_50k_24h_R2
- ss_50k_24h_R3: data/subset/ss_50k_24h_R3
+ 50k_0h_R1: data/raw/50k_0h_R1
+ 50k_0h_R2: data/raw/50k_0h_R2
+ 50k_0h_R3: data/raw/50k_0h_R3
+ 50k_24h_R1: data/raw/50k_24h_R1
+ 50k_24h_R2: data/raw/50k_24h_R2
+ 50k_24h_R3: data/raw/50k_24h_R3
 
 multibam : data_visu
 
 zero:
- R1: results/MACS2/ss_50k_0h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
- R2: results/MACS2/ss_50k_0h_R2_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
- R3: results/MACS2/ss_50k_0h_R3_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
+ R1: results/MACS2/50k_0h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
+ R2: results/MACS2/50k_0h_R2_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
+ R3: results/MACS2/50k_0h_R3_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
 
 vingtquatre:
- R1: results/MACS2/ss_50k_24h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
- R2: results/MACS2/ss_50k_24h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
- R3: results/MACS2/ss_50k_24h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
+ R1: results/MACS2/50k_24h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
+ R2: results/MACS2/50k_24h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
+ R3: results/MACS2/50k_24h_R1_trim_mapped_sorted_q2_nodup_peaks.narrowPeak
 
 zeroh : 0h
 vingtquatreh : 24h
